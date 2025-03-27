@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-container">
       <div class="login-header">
-        <h2>Đăng Nhập Người Dùng</h2>
+        <h2>Đăng Nhập</h2>
       </div>
       
       <form @submit.prevent="submitForm" class="login-form">

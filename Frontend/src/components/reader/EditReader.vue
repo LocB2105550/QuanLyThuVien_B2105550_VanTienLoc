@@ -3,7 +3,7 @@
     <h2>Chỉnh Sửa Độc Giả</h2>
     <form @submit.prevent="submitForm">
       <div class="mb-3">
-        <label class="form-label">Họ lót</label>
+        <label class="form-label">Họ và tên đệm</label>
         <input
           v-model="reader.hoLot"
           type="text"

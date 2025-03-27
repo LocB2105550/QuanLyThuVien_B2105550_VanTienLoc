@@ -13,7 +13,7 @@
         </div>
         <nav class="main-nav">
           <router-link to="/user/books" class="nav-link">
-            <i class="fas fa-book"></i> Danh sách sách
+            <i class="fas fa-book"></i> Tủ sách
           </router-link>
           <router-link to="/user/borrow-history" class="nav-link">
             <i class="fas fa-history"></i> Lịch sử mượn

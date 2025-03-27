@@ -1,6 +1,6 @@
 <template>
   <div class="book-list">
-    <h1>Danh sách Sách</h1>
+    <h1>Tủ Sách</h1>
     <div class="search-filter">
       <div class="search-box">
         <i class="fas fa-search"></i>
