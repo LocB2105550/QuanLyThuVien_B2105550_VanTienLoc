@@ -1,0 +1,12 @@
+ADMIN
+    - Quản lý sách
+        - Xem toàn bộ sách
+        - Thêm, sửa, xóa sách
+        - Tìm kiếm sách theo tên
+    - Quản lý mượn sách
+        - Cập nhật trạng thái mượn sách
+USER
+    - Tìm kiếm sách
+    - Mượn sách online (Chọn sách, chọn ngày đến nhận sách)
+
+Các trạng thái khi quản lý mượn sách (Chờ đến nhận, Đang mượn, Đã trả)
