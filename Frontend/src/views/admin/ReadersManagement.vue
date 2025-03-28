@@ -7,15 +7,17 @@
       </router-link>
     </div>
 
-    <div class="search-filter">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Tìm kiếm độc giả..."
-          @input="filterReaders"
-        />
+    <div class="search-container">
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Tìm kiếm độc giả..."
+            @input="filterReaders"
+          />
+        </div>
       </div>
     </div>
 
@@ -23,7 +25,6 @@
       <table>
         <thead>
           <tr>
-            <th>Mã độc giả</th>
             <th>Họ và tên</th>
             <th>Ngày sinh</th>
             <th>Phái</th>
@@ -33,8 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(reader, index) in filteredReaders" :key="reader.id">
-            <td>{{ reader._id }}</td>
+          <tr v-for="(reader, index) in filteredReaders" :key="reader._id">
             <td>{{ reader.hoLot }} {{ reader.ten }}</td>
             <td>{{ formatDate(reader.ngaySinh) }}</td>
             <td>
@@ -45,13 +45,16 @@
             <td>{{ reader.diaChi }}</td>
             <td>{{ reader.dienThoai }}</td>
             <td class="actions">
-              <button class="btn btn-edit" @click="editReader(reader)">
+              <button class="btn btn-edit" @click="editReader(reader)" title="Sửa">
                 <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-delete" @click="deleteReader(reader)" title="Xóa" v-if="canDelete">
+                <i class="fas fa-trash"></i>
               </button>
             </td>
           </tr>
           <tr v-if="filteredReaders.length === 0">
-            <td colspan="7" class="no-data">Không có dữ liệu</td>
+            <td colspan="6" class="no-data">Không có dữ liệu</td>
           </tr>
         </tbody>
       </table>
@@ -68,13 +71,14 @@ const router = useRouter();
 const allReaders = ref([]);
 const searchQuery = ref("");
 const filteredReaders = ref([]);
+const canDelete = ref(false); // Set to true if delete functionality is available
 
 const filterReaders = () => {
   filteredReaders.value = allReaders.value.filter((reader) => {
+    const fullName = `${reader.hoLot} ${reader.ten}`.toLowerCase();
     const matchSearch =
-      reader.hoLot.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      reader.ten.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      reader._id.toLowerCase().includes(searchQuery.value.toLowerCase());
+      fullName.includes(searchQuery.value.toLowerCase()) ||
+      reader.dienThoai.includes(searchQuery.value);
 
     return matchSearch;
   });
@@ -88,6 +92,20 @@ const formatDate = (date) => {
 
 const editReader = (reader) => {
   router.push(`/admin/edit-reader/${reader._id}`);
+};
+
+const deleteReader = async (reader) => {
+  if (confirm("Bạn có chắc chắn muốn xóa độc giả này không?")) {
+    try {
+      await DocgiaService.delete(reader._id);
+      allReaders.value = allReaders.value.filter((r) => r._id !== reader._id);
+      filterReaders();
+      alert("Xóa độc giả thành công!");
+    } catch (error) {
+      console.error("Lỗi khi xóa độc giả:", error);
+      alert("Xóa độc giả thất bại!");
+    }
+  }
 };
 
 const fetchReaders = async () => {
@@ -118,6 +136,7 @@ onMounted(() => {
 
 .actions {
   display: flex;
+  gap: 0.5rem;
   justify-content: center;
 }
 
@@ -125,12 +144,27 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.btn-edit {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.btn-delete {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .no-data {

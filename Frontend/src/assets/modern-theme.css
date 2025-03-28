@@ -140,13 +140,13 @@ h6 {
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     margin-bottom: 2rem;
+    background-color: white;
 }
 
 table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    background: var(--white-color);
 }
 
 table th {
@@ -155,13 +155,16 @@ table th {
     font-weight: 600;
     text-align: left;
     padding: 1rem;
+    font-size: 0.95rem;
     border-bottom: 2px solid #e0e0e0;
+    white-space: nowrap;
 }
 
 table td {
-    padding: 1rem;
+    padding: 0.8rem 1rem;
     border-bottom: 1px solid #e0e0e0;
     vertical-align: middle;
+    font-size: 0.9rem;
 }
 
 table tr:last-child td {
@@ -172,18 +175,66 @@ table tr:hover {
     background-color: rgba(67, 97, 238, 0.05);
 }
 
+.btn-edit,
+.btn-delete,
+.btn-view {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.btn-edit {
+    background-color: var(--info-color);
+}
+
+.btn-delete {
+    background-color: var(--danger-color);
+}
+
+.btn-view {
+    background-color: var(--success-color);
+}
+
+.btn-edit:hover,
+.btn-delete:hover,
+.btn-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.no-data {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray-color);
+    font-style: italic;
+}
+
 /* Search */
 .search-filter {
     display: flex;
     margin-bottom: 1.5rem;
     gap: 1rem;
     flex-wrap: wrap;
+    max-width: 600px;
 }
 
 .search-box {
     flex-grow: 1;
     position: relative;
-    min-width: 250px;
+    min-width: 200px;
 }
 
 .search-box i {
@@ -196,10 +247,11 @@ table tr:hover {
 
 .search-box input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
     border-radius: var(--border-radius);
     border: 1px solid #e0e0e0;
     transition: var(--transition);
+    font-size: 0.9rem;
 }
 
 .search-box input:focus {

@@ -7,23 +7,25 @@
       </router-link>
     </div>
 
-    <div class="search-filter">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Tìm kiếm sách..."
-          @input="filterBooks"
-        />
-      </div>
-      <div class="filter-select">
-        <select v-model="filterAuthor" @change="filterBooks" class="form-control">
-          <option value="">Tất cả tác giả</option>
-          <option v-for="author in uniqueAuthors" :key="author" :value="author">
-            {{ author }}
-          </option>
-        </select>
+    <div class="search-container">
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Tìm kiếm sách..."
+            @input="filterBooks"
+          />
+        </div>
+        <div class="filter-select">
+          <select v-model="filterAuthor" @change="filterBooks" class="form-control">
+            <option value="">Tất cả tác giả</option>
+            <option v-for="author in uniqueAuthors" :key="author" :value="author">
+              {{ author }}
+            </option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -150,8 +152,24 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+table tr td {
+  height: 90px; 
+  vertical-align: middle; 
+}
+
+.search-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.search-filter {
+  width: 100%;
+  max-width: 600px;
+}
+
 .filter-select {
-  min-width: 200px;
+  min-width: 180px;
+  max-width: 200px;
 }
 
 .book-image {
@@ -163,13 +181,14 @@ onMounted(async () => {
 }
 
 .actions {
+  height: 120px;
   display: flex;
   gap: 0.5rem;
   justify-content: center;
 }
 
 .btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 36px;

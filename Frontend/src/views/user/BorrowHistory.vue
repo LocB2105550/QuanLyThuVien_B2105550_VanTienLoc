@@ -2,6 +2,20 @@
   <div class="borrow-history">
     <h1>Lịch Sử Mượn Sách</h1>
     
+    <div v-if="borrowings.length > 0" class="search-container">
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Tìm kiếm trong lịch sử mượn..."
+            @input="filterBorrowHistory"
+          />
+        </div>
+      </div>
+    </div>
+    
     <div v-if="isLoading" class="loading">
       <i class="fas fa-spinner fa-spin"></i>
       <p>Đang tải dữ liệu...</p>
@@ -17,7 +31,7 @@
     
     <div v-else class="history-list">
       <div 
-        v-for="(borrow, index) in borrowings" 
+        v-for="(borrow, index) in filteredBorrowings" 
         :key="borrow._id"
         class="history-card"
         :class="getStatusClass(borrow.status)"
@@ -62,6 +76,8 @@ import { useRouter } from 'vue-router';
 const borrowings = ref([]);
 const isLoading = ref(true);
 const router = useRouter();
+const searchQuery = ref('');
+const filteredBorrowings = ref([]);
 
 const getStatusClass = (status) => {
   switch(status) {
@@ -76,6 +92,17 @@ const formatDate = (dateString) => {
   if (!dateString) return "Chưa xác định";
   const date = new Date(dateString);
   return date.toLocaleDateString("vi-VN");
+};
+
+const filterBorrowHistory = () => {
+  if (!searchQuery.value) {
+    filteredBorrowings.value = borrowings.value;
+    return;
+  }
+  
+  filteredBorrowings.value = borrowings.value.filter(borrow => {
+    return borrow.tenSach.toLowerCase().includes(searchQuery.value.toLowerCase());
+  });
 };
 
 const fetchBorrowHistory = async () => {
@@ -107,6 +134,9 @@ const fetchBorrowHistory = async () => {
     borrowings.value = userBorrowings.sort((a, b) => 
       new Date(b.ngayMuon) - new Date(a.ngayMuon)
     );
+    
+    // Initialize filtered borrowings
+    filterBorrowHistory();
   } catch (error) {
     console.error("Error fetching borrow history:", error);
   } finally {

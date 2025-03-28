@@ -1,15 +1,17 @@
 <template>
   <div class="book-list">
     <h1>Tủ Sách</h1>
-    <div class="search-filter">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Tìm kiếm sách... (Tên sách, Tên tác giả)"
-          @input="filterBooks"
-        />
+    <div class="search-container">
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Tìm kiếm sách..."
+            @input="filterBooks"
+          />
+        </div>
       </div>
     </div>
     
@@ -289,5 +291,15 @@ onMounted(() => {
   .books-grid {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
+}
+
+.search-container {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.search-filter {
+  width: 100%;
+  max-width: 500px;
 }
 </style>

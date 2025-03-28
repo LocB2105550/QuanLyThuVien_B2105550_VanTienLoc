@@ -7,48 +7,48 @@
       </router-link>
     </div>
 
-    <div class="search-filter">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Tìm kiếm nhân viên..."
-          @input="filterEmployees"
-        />
+    <div class="search-container">
+      <div class="search-filter">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Tìm kiếm nhân viên..."
+            @input="filterEmployees"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="employee-table-container">
-      <table class="employee-table">
+    <div class="table-container">
+      <table>
         <thead>
           <tr>
-            <th>Mã nhân viên</th>
-            <th>Họ và tên</th>
+            <th>Họ tên nhân viên</th>
             <th>Chức vụ</th>
             <th>Địa chỉ</th>
-            <th>Điện thoại</th>
+            <th>Số điện thoại</th>
             <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(employee, index) in filteredEmployees"
-            :key="employee._id"
-          >
-            <td>{{ employee._id }}</td>
+          <tr v-for="(employee, index) in filteredEmployees" :key="employee._id">
             <td>{{ employee.hotennv }}</td>
             <td>{{ employee.chucvu }}</td>
             <td>{{ employee.diachi }}</td>
             <td>{{ employee.sodienthoai }}</td>
             <td class="actions">
-              <button class="btn-edit" @click="editEmployee(employee)">
+              <button class="btn btn-edit" @click="editEmployee(employee)" title="Sửa">
                 <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-delete" @click="deleteEmployee(employee)" title="Xóa">
+                <i class="fas fa-trash"></i>
               </button>
             </td>
           </tr>
           <tr v-if="filteredEmployees.length === 0">
-            <td colspan="6" class="no-data">Không có dữ liệu</td>
+            <td colspan="5" class="no-data">Không có dữ liệu</td>
           </tr>
         </tbody>
       </table>
@@ -66,26 +66,35 @@ const allEmployees = ref([]);
 const searchQuery = ref("");
 const filteredEmployees = ref([]);
 
-// Lọc nhân viên theo tìm kiếm (họ tên, chức vụ, mã nhân viên)
 const filterEmployees = () => {
   filteredEmployees.value = allEmployees.value.filter((employee) => {
     const matchSearch =
-      employee.hotennv
-        .toLowerCase()
-        .includes(searchQuery.value.toLowerCase()) ||
+      employee.hotennv.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       employee.chucvu.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      employee._id.toLowerCase().includes(searchQuery.value.toLowerCase());
+      employee.sodienthoai.includes(searchQuery.value);
 
     return matchSearch;
   });
 };
 
-// Chuyển đến trang chỉnh sửa nhân viên
 const editEmployee = (employee) => {
   router.push(`/admin/edit-employee/${employee._id}`);
 };
 
-// Lấy danh sách nhân viên từ back end khi component mounted
+const deleteEmployee = async (employee) => {
+  if (confirm("Bạn có chắc chắn muốn xóa nhân viên này không?")) {
+    try {
+      await EmployeeService.delete(employee._id);
+      allEmployees.value = allEmployees.value.filter((e) => e._id !== employee._id);
+      filterEmployees();
+      alert("Xóa nhân viên thành công!");
+    } catch (error) {
+      console.error("Lỗi khi xóa nhân viên:", error);
+      alert("Xóa nhân viên thất bại!");
+    }
+  }
+};
+
 const fetchEmployees = async () => {
   try {
     const data = await EmployeeService.getAll();
@@ -96,116 +105,49 @@ const fetchEmployees = async () => {
   }
 };
 
-// Khởi tạo
 onMounted(() => {
   fetchEmployees();
 });
 </script>
 
 <style scoped>
-.employee-management {
-  width: 100%;
-  padding: 0 10px;
-}
-
-.header-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.btn-add {
-  background-color: #27ae60;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.btn-add i {
-  margin-right: 8px;
-}
-
-.search-filter {
-  display: flex;
-  margin-bottom: 20px;
-  gap: 15px;
-}
-
-.search-box {
-  flex-grow: 1;
-  position: relative;
-}
-
-.search-box i {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #7f8c8d;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 10px 10px 10px 35px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.employee-table-container {
-  overflow-x: auto;
-}
-
-.employee-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-}
-
-.employee-table th,
-.employee-table td {
-  padding: 12px 15px;
-  text-align: left;
-  border: 1px solid black;
-  box-sizing: border-box;
-}
-
-.employee-table th {
-  background-color: #f5f7fa;
-  color: #2c3e50;
-  font-weight: 600;
-}
-
-.employee-table tr:hover {
-  background-color: #f8f8f8;
-}
-
 .actions {
-  text-align: center;
-  vertical-align: middle;
-  white-space: nowrap;
-  text-align: center !important;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-edit {
-  border: none;
-  border-radius: 4px;
-  padding: 6px 10px;
-  cursor: pointer;
-  text-align: center;
-  background-color: #3498db;
+  background-color: var(--info-color);
   color: white;
-  margin-right: 5px;
+}
+
+.btn-delete {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .no-data {
   text-align: center;
-  padding: 20px;
-  color: #7f8c8d;
+  padding: 2rem;
+  color: var(--gray-color);
+  font-style: italic;
 }
 </style>
